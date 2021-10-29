@@ -15,7 +15,7 @@ public class Pumpkin {
   private int gravity = 1;
   private int floorY;
   private int pumpkinColor;
-  private int sizePixels = 200;
+  private int sizePixels = 150;
   private int glowColor;
   private int greenStemColor = #2EA22C;
 

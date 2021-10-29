@@ -87,11 +87,11 @@ void draw() {
      * Outside of for loop to avoid concurrent modification exception
      */
     if( addPumpkin ){
-      panel.addPumpkin(int(random(0, panelWidth)));
+      panel.addPumpkinRandomSize(int(random(0, panelWidth)));
     }
     if( clearPumpkins ){
       panel.pumpkins.clear();
-      panel.addPumpkin(panel.pg.width / 2);
+      panel.addPumpkin(panel.pg.width / 2, 150);
     }
 
     panel.draw();
@@ -148,7 +148,7 @@ class Panel {
     this.bg = createImage(pg.width, pg.height, ARGB);
 
     pumpkins = new ArrayList<Pumpkin>();
-    addPumpkin(pg.width / 2);
+    addPumpkin(pg.width / 2, 150);
 
     for (int i = 0; i < bg.pixels.length; i++) {
       float a = map(i, 0, bg.pixels.length, 0, 255 + 100);
@@ -156,11 +156,16 @@ class Panel {
     }
   }
 
-  void addPumpkin(int x) {
+  void addPumpkin(int x, int size) {
     Pumpkin pumpkin = new Pumpkin(x, bgColor, pg);
     pumpkin.setGraphics(pg);
+    pumpkin.setSize(size);
     pumpkin.setBounceHeight(int(random(10, height/20)));
     this.pumpkins.add(pumpkin);
+  }
+  
+  void addPumpkinRandomSize(int x) {
+    addPumpkin(x, int(random(50, 500)));
   }
 
   void draw() {
