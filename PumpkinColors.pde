@@ -33,15 +33,34 @@ void setup() {
   }
 }
 
-PGraphics pg1, pg2;
-
 void draw() {
-
-  for ( Panel panel : panels ) {
+  for ( int i = 0; i < panels.length; i++ ){
+    Panel panel = panels[i];
+    
+    if( i == mouseX / (width / numPanels) ){ 
+      panel.pumpkin.bounce();
+      
+      if( mousePressed ){
+        if( mouseButton == LEFT ){
+          panel.pumpkin.explode();
+        } else {
+          panel.pumpkin.spin();
+        }
+      }
+      
+      if( keyPressed ){
+        if( key == 'r' ){
+          panel.pumpkin.reset();
+        }
+      }
+      
+    } else {
+      panel.pumpkin.stop();
+    }
+    
     panel.draw();
   }
 }
-
 
 
 class Panel {
@@ -62,7 +81,7 @@ class Panel {
     addPumpkin();
 
     for (int i = 0; i < bg.pixels.length; i++) {
-      float a = map(i, 0, bg.pixels.length, 0, 255);
+      float a = map(i, 0, bg.pixels.length, 0, 255 + 100);
       bg.pixels[i] = color(red(bgColor), green(bgColor), blue(bgColor), a);
     }
   }
@@ -70,6 +89,7 @@ class Panel {
   void addPumpkin() {
     this.pumpkin = new Pumpkin(pg.width / 2, bgColor, pg);
     this.pumpkin.setGraphics(pg);
+    this.pumpkin.setBounceHeight(int(random(10, height/20)));
   }
 
   void draw() {
