@@ -82,7 +82,6 @@ public class Pumpkin {
     }
     if ( (this.state & EXPLODE) != 0 ) {
       updateExplode();
-      drawShape();
     }
 
     drawShape();
@@ -194,7 +193,7 @@ public class Pumpkin {
       particles.clear();
 
       pg.loadPixels();
-      for ( int i = 0; i < pg.pixels.length; i+=20 ) {
+      for ( int i = 0; i < pg.pixels.length; i+=10 ) {
         if (pg.pixels[i] == color(0)) {
           Particle p = new Particle(i % width, i / width, color(0));
           particles.add(p);
