@@ -57,7 +57,7 @@ public class Pumpkin {
   /*
    * Set how fast the pumpkin spins
    */
-  void spinSpinSpeed(int newSpeed) {
+  void setSpinSpeed(int newSpeed) {
     this.spinSpeed = newSpeed;
   }
 
@@ -130,6 +130,9 @@ public class Pumpkin {
     this.xSpeed = -speed;
   }
 
+  /*
+   * Draw the pumpkin!
+   */
   public void draw() {
     pg.push();
 
@@ -138,23 +141,28 @@ public class Pumpkin {
     if ( (this.state & BOUNCE) != 0 ) {
       updateBounce();
     }
+    if ( (this.state & EXPLODE) != 0 ) {
+      updateExplode();
+    }
+    
+    // Spin must be the last if check because the x/y coordinates
+    // and coordiante system are modified when rotate() is called
     if ( (this.state & SPIN) != 0 ) {
       pg.pushMatrix();
       savedX = this.x;
       savedY = this.y;
       updateSpin();
     }
-    if ( (this.state & EXPLODE) != 0 ) {
-      updateExplode();
-    }
 
-    drawShape();
+    drawPumpkinShape();
 
     if ( (this.state & SPIN) != 0 ) {
       pg.popMatrix();
       this.x = savedX;
       this.y = savedY;
     }
+    
+    drawShadow();
 
     pg.pop();
   }
@@ -200,7 +208,14 @@ public class Pumpkin {
     }
   }
 
-  private void drawShape() {
+  private void drawShadow() {
+    float scaleFactor = sizePixels / 150.0;
+    float w = (150 * scaleFactor * y) / height;
+    float h = (10 * scaleFactor * y) / height;
+    pg.ellipse(x, floorY, w, h);
+  }
+
+  private void drawPumpkinShape() {
 
     if ( this.sizePixels == 0 ) {
       return;
@@ -236,9 +251,6 @@ public class Pumpkin {
     // Draw tooth  
     pg.fill(this.pumpkinColor);
     pg.rect(x + (10 * scaleFactor), y + (30 * scaleFactor), 10 * scaleFactor, 15 * scaleFactor);
-
-    // Draw shadow
-    pg.ellipse(x, floorY, (150 * scaleFactor * y) / height, (10 * scaleFactor * y) / height);
 
     // Clear the top outline of the tooth
     pg.strokeWeight(3);

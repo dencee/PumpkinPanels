@@ -18,8 +18,10 @@
  * pumpkin.reset()
  * pumpkin.moveRight()
  * pumpkin.moveLeft()
+ * panel.addPumpkin()
  */
 int numPanels = 5;
+int panelWidth;
 Panel[] panels;
 color[] bgColors;
 
@@ -35,7 +37,7 @@ color[] colors = {
   BLUE, 
   GREEN, 
   YELLOW, 
-  PURPLE,
+  PURPLE, 
   ORANGE
 };
 
@@ -45,68 +47,96 @@ void setup() {
 }
 
 void draw() {
-  for ( int i = 0; i < panels.length; i++ ){
-    Pumpkin pumpkin = panels[i].pumpkin;
-    
-    /*
-     * If mouse is hovering over a pumpkin...
-     */
-    if( i == mouseX / (width / numPanels) ){ 
-      pumpkin.bounce();
+  for ( int i = 0; i < panels.length; i++ ) {
+    boolean addPumpkin = false;
+    boolean clearPumpkins = false;
+    Panel panel = panels[i];
+
+    for ( Pumpkin pumpkin : panel.pumpkins ) {
       
-      if( mousePressed ){
-        if( mouseButton == LEFT ){
-          pumpkin.explode();
-        } else if( mouseButton == RIGHT ){
-          pumpkin.spin();
+      /*
+       * If mouse is hovering over a panel...
+       */
+      if ( i == mouseX / (width / numPanels) ) { 
+        pumpkin.bounce();
+
+        if ( mousePressed ) {
+          if ( mouseButton == LEFT ) {
+            pumpkin.explode();
+          } else if ( mouseButton == RIGHT ) {
+            pumpkin.spin();
+          }
         }
-      }
-      
-      if( keyPressed ){
-        if( key == 'r' ){
-          pumpkin.reset();
-        } else if( key == 's' ){
-          pumpkin.stop();
+
+        if ( keyPressed ) {
+          if ( key == 'r' ) {
+            pumpkin.reset();
+            clearPumpkins = true;
+          } else if ( key == 's' ) {
+            pumpkin.stop();
+          } else if ( key == 'a' ) {
+            addPumpkin = true;
+          }
         }
+      } else {
+        pumpkin.stop();
       }
-    } else {
-      pumpkin.stop();
     }
     
-    panels[i].draw();
+    /*
+     * Outside of for loop to avoid concurrent modification exception
+     */
+    if( addPumpkin ){
+      panel.addPumpkin(int(random(0, panelWidth)));
+    }
+    if( clearPumpkins ){
+      panel.pumpkins.clear();
+      panel.addPumpkin(panel.pg.width / 2);
+    }
+
+    panel.draw();
   }
 }
 
-void mouseWheel(MouseEvent event){
-  Pumpkin pumpkin = panels[mouseX / (width / numPanels)].pumpkin;
-  
-  if( event.getCount() > 0 ){
-    pumpkin.spinSpinSpeed( pumpkin.spinSpeed + 2 );
-  } else {
-    pumpkin.spinSpinSpeed( pumpkin.spinSpeed - 2 );
+void mouseWheel(MouseEvent event) {
+
+  for ( Pumpkin pumpkin : panels[mouseX / panelWidth].pumpkins ) {
+    
+    /*
+     * event.getCount() returns < 0 if scrolled up (away from the user)
+     * event.getCount() returns > 0 if scrolled down (toward the user)
+     */
+    if ( event.getCount() > 0 ) {
+      pumpkin.setSpinSpeed( pumpkin.spinSpeed + 2 );
+    } else {
+      pumpkin.setSpinSpeed( pumpkin.spinSpeed - 2 );
+    }
   }
 }
 
-void initializePanels(color[] colors){
+
+
+
+void initializePanels(color[] colors) {
+  panelWidth = width / numPanels;
   bgColors = new color[numPanels];
-  for( int i = 0; i < bgColors.length; i++ ){
+  panels = new Panel[numPanels];
+
+  for ( int i = 0; i < bgColors.length; i++ ) {
     bgColors[i] = colors[i % colors.length];
   }
 
-  panels = new Panel[numPanels];
   for ( int i = 0; i < numPanels; i++ ) {
-    int w = width / numPanels;
-    int x = i * w;
-    panels[i] = new Panel(x, w, bgColors[i]);
+    panels[i] = new Panel(i * panelWidth, panelWidth, bgColors[i]);
   }
 }
 
 class Panel {
   int x, y, w, h;
   color bgColor;
-  Pumpkin pumpkin;
   PImage bg;
   PGraphics pg;
+  ArrayList<Pumpkin> pumpkins;
 
   public Panel(int x, int w, color bgColor) {
     this.x = x;
@@ -116,6 +146,8 @@ class Panel {
     this.bgColor = bgColor;
     this.pg = createGraphics(w, h);
     this.bg = createImage(pg.width, pg.height, ARGB);
+
+    pumpkins = new ArrayList<Pumpkin>();
     addPumpkin(pg.width / 2);
 
     for (int i = 0; i < bg.pixels.length; i++) {
@@ -125,21 +157,25 @@ class Panel {
   }
 
   void addPumpkin(int x) {
-    this.pumpkin = new Pumpkin(x, bgColor, pg);
-    this.pumpkin.setGraphics(pg);
-    this.pumpkin.setBounceHeight(int(random(10, height/20)));
+    Pumpkin pumpkin = new Pumpkin(x, bgColor, pg);
+    pumpkin.setGraphics(pg);
+    pumpkin.setBounceHeight(int(random(10, height/20)));
+    this.pumpkins.add(pumpkin);
   }
 
   void draw() {
     pg.beginDraw();
-    
+
     pg.fill(255);
     pg.rect(0, 0, pg.width, pg.height);
     pg.image(bg, 0, 0);
-    this.pumpkin.draw();
     
+    for( Pumpkin pumpkin : this.pumpkins ){
+      pumpkin.draw();
+    }
+
     pg.endDraw();
-    
+
     image(pg, x, y);
   }
 }
