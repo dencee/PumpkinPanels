@@ -52,7 +52,7 @@ class Pumpkin:
     # Make the pumpkin EXPLODE!
     #
     def explode_random_color(self):
-        explode(color(random(255), random(255), random(255)))
+        self.explode(color(random(255), random(255), random(255)))
 
     def explode(self, c=color(0)):
         if (self.state & Pumpkin.EXPLODE) == 0:
@@ -247,10 +247,7 @@ class Pumpkin:
             self.particle_color = None
             self.particle_size = None
             self.is_sparkle = False
-            
-            self.start_x = x
-            self.start_y = y
-        
+
             self.particle_setup(x, y)
         
             if particle_color is not None:
