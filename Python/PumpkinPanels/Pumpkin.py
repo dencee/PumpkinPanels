@@ -169,7 +169,7 @@ class Pumpkin:
             self.x = 0 - self.size_pixels
     
         if self.x < 0 - self.size_pixels:
-            self.x = self.pg.width
+            self.x = self.pg.width + self.size_pixels
 
     def update_spin(self):
         self.pg.translate(self.x, self.y)

@@ -206,7 +206,7 @@ public class Pumpkin {
       this.x = 0 - this.sizePixels;
     }
     if ( this.x < 0 - this.sizePixels ) {
-      this.x = pg.width;
+      this.x = pg.width + this.sizePixels;
     }
   }
 

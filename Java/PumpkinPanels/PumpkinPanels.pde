@@ -48,12 +48,12 @@ void setup() {
 
 void draw() {
   for ( int i = 0; i < panels.length; i++ ) {
-    boolean addPumpkin = false;
-    boolean clearPumpkins = false;
     Panel panel = panels[i];
+    boolean addPumpkinFlag = false;
+    boolean clearPumpkinsFlag = false;
 
     for ( Pumpkin pumpkin : panel.pumpkins ) {
-      
+
       /*
        * If mouse is hovering over a panel...
        */
@@ -69,31 +69,31 @@ void draw() {
         }
 
         if ( keyPressed ) {
-          if( keyCode == LEFT ){
+          if ( keyCode == LEFT ) {
             pumpkin.moveLeft(5);
-          } else if( keyCode == RIGHT ){
+          } else if ( keyCode == RIGHT ) {
             pumpkin.moveRight(5);
           } else if ( key == 'r' ) {
             pumpkin.reset();
-            clearPumpkins = true;
+            clearPumpkinsFlag = true;
           } else if ( key == 's' ) {
             pumpkin.stop();
           } else if ( key == 'a' ) {
-            addPumpkin = true;
+            addPumpkinFlag = true;
           }
         }
       } else {
         pumpkin.stop();
       }
     }
-    
+
     /*
      * Outside of for loop to avoid concurrent modification exception
      */
-    if( addPumpkin ){
+    if ( addPumpkinFlag ) {
       panel.addPumpkinRandomSize(int(random(0, panelWidth)));
     }
-    if( clearPumpkins ){
+    if ( clearPumpkinsFlag ) {
       panel.pumpkins.clear();
       panel.addPumpkin(panel.pg.width / 2, 150);
     }
@@ -105,7 +105,7 @@ void draw() {
 void mouseWheel(MouseEvent event) {
 
   for ( Pumpkin pumpkin : panels[mouseX / panelWidth].pumpkins ) {
-    
+
     /*
      * event.getCount() returns < 0 if scrolled up (away from the user)
      * event.getCount() returns > 0 if scrolled down (toward the user)
@@ -117,9 +117,6 @@ void mouseWheel(MouseEvent event) {
     }
   }
 }
-
-
-
 
 void initializePanels(color[] colors) {
   panelWidth = width / numPanels;
@@ -166,7 +163,7 @@ class Panel {
     pumpkin.setBounceHeight(int(random(10, height/20)));
     this.pumpkins.add(pumpkin);
   }
-  
+
   void addPumpkinRandomSize(int x) {
     addPumpkin(x, int(random(10, 200)));
   }
@@ -177,8 +174,8 @@ class Panel {
     pg.fill(255);
     pg.rect(0, 0, pg.width, pg.height);
     pg.image(bg, 0, 0);
-    
-    for( Pumpkin pumpkin : this.pumpkins ){
+
+    for ( Pumpkin pumpkin : this.pumpkins ) {
       pumpkin.draw();
     }
 
