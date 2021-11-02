@@ -52,9 +52,6 @@ def setup():
 
 def draw():
     for i, panel in enumerate(panels):
-        add_pumpkin_flag = False
-        clear_pumpkins_flag = False
-
         for pumpkin in panel.pumpkins:
       
             #
@@ -64,35 +61,16 @@ def draw():
                 pumpkin.bounce()
 
                 if mousePressed:
-                    if mouseButton == LEFT:
-                        pumpkin.explode()
-                    elif mouseButton == RIGHT:
-                        pumpkin.spin()
+                    pass
+                    #
+                    # A mouse button is pressed...
+                    #
 
                 if keyPressed:
-                    if key == 'r':
-                        pumpkin.reset()
-                        clear_pumpkins_flag = True
-                    elif key == 's':
-                        pumpkin.stop()
-                    elif key == 'a':
-                        add_pumpkin_flag = True
-                    elif keyCode == LEFT:
-                        pumpkin.move_left(5)
-                    elif keyCode == RIGHT:
-                        pumpkin.move_right(5)
-            else:
-                pumpkin.stop()
-
-        #
-        # Outside of for loop to avoid concurrent modification exception
-        #
-        if add_pumpkin_flag:
-            panel.add_pumpkin_random_size(int(random(0, panel_width)))
-
-        if clear_pumpkins_flag:
-            panel.pumpkins = list()
-            panel.add_pumpkin(panel.pg.width / 2, 150)
+                    pass
+                    #
+                    # A key is pressed...
+                    #
 
         panel.draw()
 

@@ -57,33 +57,22 @@ void draw() {
       /*
        * If mouse is hovering over a panel...
        */
-      if ( i == mouseX / (width / numPanels) ) { 
+      if ( i == mouseX / panelWidth ) { 
         pumpkin.bounce();
 
         if ( mousePressed ) {
-          if ( mouseButton == LEFT ) {
-            pumpkin.explode();
-          } else if ( mouseButton == RIGHT ) {
-            pumpkin.spin();
-          }
+          /*
+           * If the mouse is pressed...
+           */
+           
         }
 
         if ( keyPressed ) {
-          if ( keyCode == LEFT ) {
-            pumpkin.moveLeft(5);
-          } else if ( keyCode == RIGHT ) {
-            pumpkin.moveRight(5);
-          } else if ( key == 'r' ) {
-            pumpkin.reset();
-            clearPumpkinsFlag = true;
-          } else if ( key == 's' ) {
-            pumpkin.stop();
-          } else if ( key == 'a' ) {
-            addPumpkinFlag = true;
-          }
+          /*
+           * If a key is pressed...
+           */
+           
         }
-      } else {
-        pumpkin.stop();
       }
     }
 
